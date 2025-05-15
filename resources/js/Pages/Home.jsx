@@ -1,6 +1,6 @@
 import Review from "@/Components/Review";
 import SiteLayout from "@/Layouts/SiteLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import Calendar from "react-calendar";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -53,6 +53,10 @@ export default function Home({ reviews, appointments }) {
                     tileDisabled={tileDisabled}
                     minDate={oneYearBeforeNow}
                     maxDate={oneYearFromNow}
+                    onClickDay={(date) => {
+                        const formattedDate = format(date, "yyyy-MM-dd");
+                        router.visit(`/dashboard?date=${formattedDate}`);
+                    }}                
                 />
             </div>
             <Carousel
