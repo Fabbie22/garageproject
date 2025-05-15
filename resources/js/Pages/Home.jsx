@@ -83,7 +83,7 @@ export default function Home({ reviews, appointments }) {
 
             {reviews.length > 0 && (
                 <section className="bg-gray-100 py-12">
-                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-5xl mx-auto px-72 sm:px-6 lg:px-8">
                         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
                             Klantbeoordelingen
                         </h2>
