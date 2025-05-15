@@ -15,12 +15,22 @@ export default function Home({ reviews, appointments }) {
     const [bookedDates, setBookedDates] = useState([]);
 
     useEffect(() => {
-        // Convert appointment timestamps to 'YYYY-MM-DD'
-        const cleanedDates = appointments.map(appointment =>
-        format(new Date(appointment.date), "yyyy-MM-dd")
-        );
-        setBookedDates(cleanedDates);
-    }, []);
+    const dailyHours = {};
+
+    appointments.forEach(({ date, treatment }) => {
+        const day = format(new Date(date), "yyyy-MM-dd");
+        const duration = treatment?.duration || 0;
+        dailyHours[day] = (dailyHours[day] || 0) + duration;
+    });
+
+    const maxDailyHours = 10;
+
+    const fullyBookedDays = Object.entries(dailyHours)
+        .filter(([, hours]) => hours >= maxDailyHours)
+        .map(([day]) => day);
+
+    setBookedDates(fullyBookedDays);
+    }, [appointments]);
 
     const tileDisabled = ({ date, view }) => {
         if (view === "month") {

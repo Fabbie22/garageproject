@@ -9,11 +9,15 @@ use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-        public function index(Request $request)
+        public function index()
     {
         $reviews = Review::with('user')->get();
 
-        $appointments = Appointment::select('date')->get();
+        $appointments = Appointment::select('date', 'treatment_id')
+            ->with(['treatment' => function ($query) {
+                $query->select('id', 'duration');
+            }])
+            ->get();
 
         return Inertia::render('Home', [
             'reviews' => $reviews,
