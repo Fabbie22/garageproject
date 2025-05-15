@@ -60,7 +60,7 @@ export default function Home({ reviews, appointments }) {
                             maxDate={oneYearFromNow}
                             onClickDay={(date) => {
                                 const formattedDate = format(date, "yyyy-MM-dd");
-                                router.visit(`/dashboard?date=${formattedDate}`);
+                                router.visit(`/dashboard/afspraken?date=${formattedDate}`);
                             }}
                             className="rounded-lg shadow-md"
                         />
