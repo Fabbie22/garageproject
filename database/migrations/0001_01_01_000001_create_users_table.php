@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('phone_number')->nullable();
             $table->enum('role', ['customer', 'reception', 'mechanic', 'owner'])->default('customer');
-            $table->foreignId('vehicle_id')->nullable()->constrained()->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
