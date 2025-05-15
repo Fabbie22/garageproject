@@ -13,13 +13,11 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        // $appointments = Appointment::with('user')->get();
+        $appointments = Appointment::with('user', 'treatment')->get();
 
-        // dd($appointments);
-
-        // return Inertia::render('Home', [
-        //     'appointments' => $appointments,
-        // ]);
+        return Inertia::render('Appointments/Appointments', [
+            'appointments' => $appointments,
+        ]);
     }
 
     /**

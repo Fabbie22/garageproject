@@ -30,6 +30,36 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                {user.role === "customer" && (
+                                    <NavLink
+                                        href={route("appointments.index")}
+                                        active={route().current(
+                                            "appointments.index"
+                                        )}
+                                    >
+                                        Afspraken
+                                    </NavLink>
+                                )}
+                                {user.role === "customer" && (
+                                    <NavLink
+                                        href={route("dashboard")}
+                                        active={route().current(
+                                            "afspraak-maken"
+                                        )}
+                                    >
+                                        Voertuigen
+                                    </NavLink>
+                                )}
+                                {user.role === "customer" && (
+                                    <NavLink
+                                        href={route("dashboard")}
+                                        active={route().current(
+                                            "afspraak-maken"
+                                        )}
+                                    >
+                                        Facturen
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 

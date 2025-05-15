@@ -5,12 +5,14 @@ import Calendar from "react-calendar";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "react-calendar/dist/Calendar.css";
-
 import Review from "@/Components/Review";
 import SiteLayout from "@/Layouts/SiteLayout";
 
 export default function Home({ reviews, appointments }) {
     const [bookedDates, setBookedDates] = useState([]);
+
+    console.log(reviews);
+    console.log(appointments);
 
     useEffect(() => {
         const dailyHours = {};
