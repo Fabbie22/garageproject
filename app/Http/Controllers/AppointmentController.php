@@ -44,7 +44,16 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(Request $request)
+    {
+        Appointment::create([
+            'user_id' => $request->user()->id,
+            'vehicle_id' => $request->vehicle,
+            'treatment_id' => $request->treatment,
+            'date' => $request->date,
+            'customer_note' => $request->customer_note
+        ]);
+    }
 
     /**
      * Display the specified resource.

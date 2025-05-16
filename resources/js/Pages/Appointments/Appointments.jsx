@@ -2,6 +2,7 @@ import DateInput from "@/Components/DateInput";
 import DropdownForm from "@/Components/DropdownForm";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
@@ -30,6 +31,9 @@ export default function Appointments({
 
     const { data, setData, post, errors } = useForm({
         date: dateFromUrl,
+        vehicle: "",
+        treatment: "",
+        customer_note: "",
     });
 
     useEffect(() => {
@@ -58,8 +62,13 @@ export default function Appointments({
     const tileDisabled = ({ date, view }) => {
         if (view === "month") {
             const dateString = format(date, "yyyy-MM-dd");
-            return bookedDates.includes(dateString);
+
+            const isFullyBooked = bookedDates.includes(dateString);
+            const isSunday = date.getDay() === 0; // 0 = Sunday
+
+            return isFullyBooked || isSunday;
         }
+
         return false;
     };
 
@@ -76,7 +85,13 @@ export default function Appointments({
     const oneYearBeforeNow = new Date();
     oneYearBeforeNow.setFullYear(oneYearBeforeNow.getFullYear() - 1);
 
-    const handleSubmit = () => {};
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        console.log(data);
+
+        post(route("appointments.store"));
+    };
 
     return (
         <AuthenticatedLayout>
@@ -118,7 +133,18 @@ export default function Appointments({
                                 />
                             </div>
                             <div>
-                                <DropdownForm>
+                                <DropdownForm
+                                    value={data.vehicle}
+                                    onChange={(e) =>
+                                        setData("vehicle", e.target.value)
+                                    }
+                                    id="vehicle"
+                                    name="vehicle"
+                                >
+                                    <option value="">
+                                        — Kies een voertuig —
+                                    </option>
+
                                     {personalVehicles.map((vehicle) => (
                                         <option
                                             value={vehicle.id}
@@ -137,7 +163,18 @@ export default function Appointments({
                                 </DropdownForm>
                             </div>
                             <div>
-                                <DropdownForm>
+                                <DropdownForm
+                                    value={data.treatment}
+                                    onChange={(e) =>
+                                        setData("treatment", e.target.value)
+                                    }
+                                    id="treatment"
+                                    name="treatment"
+                                >
+                                    <option value="">
+                                        — Kies een behandeling —
+                                    </option>
+
                                     {treatments.map((treatment) => (
                                         <option
                                             value={treatment.id}
@@ -161,6 +198,7 @@ export default function Appointments({
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         autoComplete="customer_note"
                                         isFocused={true}
+                                        value={data.customer_note}
                                         onChange={(e) =>
                                             setData(
                                                 "customer_note",
@@ -176,6 +214,7 @@ export default function Appointments({
                                     />
                                 </div>
                             </div>
+                            <PrimaryButton>Afspraak maken</PrimaryButton>
                         </form>
                     </div>
                 </div>

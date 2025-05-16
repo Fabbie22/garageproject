@@ -35,8 +35,13 @@ export default function Home({ reviews, appointments }) {
     const tileDisabled = ({ date, view }) => {
         if (view === "month") {
             const dateString = format(date, "yyyy-MM-dd");
-            return bookedDates.includes(dateString);
+
+            const isFullyBooked = bookedDates.includes(dateString);
+            const isSunday = date.getDay() === 0;
+
+            return isFullyBooked || isSunday;
         }
+
         return false;
     };
 
@@ -53,22 +58,33 @@ export default function Home({ reviews, appointments }) {
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-12">
                     <div className="lg:w-1/2">
-                        <h2 className="text-2xl font-semibold mb-4">Beschikbaarheid</h2>
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Beschikbaarheid
+                        </h2>
                         <Calendar
                             tileDisabled={tileDisabled}
                             minDate={oneYearBeforeNow}
                             maxDate={oneYearFromNow}
                             onClickDay={(date) => {
-                                const formattedDate = format(date, "yyyy-MM-dd");
-                                router.visit(`/dashboard/afspraken?date=${formattedDate}`);
+                                const formattedDate = format(
+                                    date,
+                                    "yyyy-MM-dd"
+                                );
+                                router.visit(
+                                    `/dashboard/afspraken?date=${formattedDate}`
+                                );
                             }}
                             className="rounded-lg shadow-md"
                         />
                     </div>
 
                     <div className="bg-white border border-gray-200 shadow-md p-8 rounded-lg lg:w-1/2">
-                        <h2 className="text-2xl font-bold mb-4 text-gray-800">Maak een afspraak</h2>
-                        <p className="mb-4 text-gray-600">Plan een afspraak voor uw voertuig:</p>
+                        <h2 className="text-2xl font-bold mb-4 text-gray-800">
+                            Maak een afspraak
+                        </h2>
+                        <p className="mb-4 text-gray-600">
+                            Plan een afspraak voor uw voertuig:
+                        </p>
                         <ul className="list-disc list-inside space-y-2 text-gray-700">
                             <li>APK</li>
                             <li>Vakantiecheck</li>

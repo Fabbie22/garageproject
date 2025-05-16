@@ -13,6 +13,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/afspraken', [AppointmentController::class, 'index'])->name('appointments.index');
+    Route::post('/afspraken/create', [AppointmentController::class, 'store'])->name('appointments.store');
 });
 
 Route::middleware('auth')->group(function () {
@@ -21,4 +22,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
