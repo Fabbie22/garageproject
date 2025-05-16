@@ -43,137 +43,157 @@ export default function UpdateProfileInformation({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
-                    <InputLabel htmlFor="first_name" value="Voornaam" />
+                <div className="flex md:flex-row flex-col gap-8">
+                    <div className="md:w-[49%]">
+                        <InputLabel htmlFor="first_name" value="Voornaam" />
 
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.first_name}
-                        onChange={(e) => setData("first_name", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="first_name"
-                    />
+                        <TextInput
+                            id="name"
+                            className="mt-1 block w-full"
+                            value={data.first_name}
+                            onChange={(e) =>
+                                setData("first_name", e.target.value)
+                            }
+                            required
+                            isFocused
+                            autoComplete="first_name"
+                        />
 
-                    <InputError className="mt-2" message={errors.first_name} />
+                        <InputError
+                            className="mt-2"
+                            message={errors.first_name}
+                        />
+                    </div>
+                    <div className="md:w-[49%]">
+                        <InputLabel htmlFor="last_name" value="Achternaam" />
+
+                        <TextInput
+                            id="name"
+                            className="mt-1 block w-full"
+                            value={data.last_name}
+                            onChange={(e) =>
+                                setData("last_name", e.target.value)
+                            }
+                            required
+                            isFocused
+                            autoComplete="last_name"
+                        />
+
+                        <InputError
+                            className="mt-2"
+                            message={errors.last_name}
+                        />
+                    </div>
                 </div>
 
-                <div>
-                    <InputLabel htmlFor="last_name" value="Achternaam" />
+                <div className="flex md:flex-row flex-col gap-8">
+                    <div className="md:w-[49%]">
+                        <InputLabel htmlFor="address" value="Adres" />
 
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.last_name}
-                        onChange={(e) => setData("last_name", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="last_name"
-                    />
+                        <TextInput
+                            id="address"
+                            className="mt-1 block w-full"
+                            value={data.address}
+                            onChange={(e) => setData("address", e.target.value)}
+                            required
+                            isFocused
+                            autoComplete="address"
+                        />
 
-                    <InputError className="mt-2" message={errors.last_name} />
+                        <InputError className="mt-2" message={errors.address} />
+                    </div>
+                    <div className="md:w-[49%]">
+                        <InputLabel htmlFor="zip_code" value="Postcode" />
+
+                        <TextInput
+                            id="zip_code"
+                            className="mt-1 block w-full"
+                            value={data.zip_code}
+                            onChange={(e) =>
+                                setData("zip_code", e.target.value)
+                            }
+                            required
+                            isFocused
+                            autoComplete="zip_code"
+                        />
+
+                        <InputError
+                            className="mt-2"
+                            message={errors.zip_code}
+                        />
+                    </div>
                 </div>
+                <div className="flex md:flex-row flex-col gap-8">
+                    <div className="md:md:w-[49%]">
+                        <InputLabel htmlFor="city" value="Plaats" />
 
-                <div>
-                    <InputLabel htmlFor="address" value="Adres" />
+                        <TextInput
+                            id="city"
+                            className="mt-1 block w-full"
+                            value={data.city}
+                            onChange={(e) => setData("city", e.target.value)}
+                            required
+                            isFocused
+                            autoComplete="city"
+                        />
 
-                    <TextInput
-                        id="address"
-                        className="mt-1 block w-full"
-                        value={data.address}
-                        onChange={(e) => setData("address", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="address"
-                    />
+                        <InputError className="mt-2" message={errors.city} />
+                    </div>
+                    <div className="md:md:w-[49%]">
+                        <InputLabel htmlFor="country" value="Land" />
 
-                    <InputError className="mt-2" message={errors.address} />
+                        <TextInput
+                            id="country"
+                            className="mt-1 block w-full"
+                            value={data.country}
+                            onChange={(e) => setData("country", e.target.value)}
+                            required
+                            isFocused
+                            autoComplete="country"
+                        />
+
+                        <InputError className="mt-2" message={errors.country} />
+                    </div>
                 </div>
+                <div className="flex md:flex-row flex-col gap-8">
+                    <div className="md:md:w-[49%]">
+                        <InputLabel
+                            htmlFor="phone_number"
+                            value="Telefoonnummer"
+                        />
 
-                <div>
-                    <InputLabel htmlFor="zip_code" value="Postcode" />
+                        <TextInput
+                            id="phone_number"
+                            className="mt-1 block w-full"
+                            value={data.phone_number}
+                            onChange={(e) =>
+                                setData("phone_number", e.target.value)
+                            }
+                            required
+                            isFocused
+                            autoComplete="phone_number"
+                        />
 
-                    <TextInput
-                        id="zip_code"
-                        className="mt-1 block w-full"
-                        value={data.zip_code}
-                        onChange={(e) => setData("zip_code", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="zip_code"
-                    />
+                        <InputError
+                            className="mt-2"
+                            message={errors.phone_number}
+                        />
+                    </div>
+                    <div className="md:md:w-[49%]">
+                        <InputLabel htmlFor="email" value="Email" />
 
-                    <InputError className="mt-2" message={errors.zip_code} />
-                </div>
+                        <TextInput
+                            id="email"
+                            type="email"
+                            className="mt-1 block w-full"
+                            value={data.email}
+                            onChange={(e) => setData("email", e.target.value)}
+                            required
+                            autoComplete="username"
+                        />
 
-                <div>
-                    <InputLabel htmlFor="city" value="Plaats" />
-
-                    <TextInput
-                        id="city"
-                        className="mt-1 block w-full"
-                        value={data.city}
-                        onChange={(e) => setData("city", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="city"
-                    />
-
-                    <InputError className="mt-2" message={errors.city} />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="country" value="Land" />
-
-                    <TextInput
-                        id="country"
-                        className="mt-1 block w-full"
-                        value={data.country}
-                        onChange={(e) => setData("country", e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="country"
-                    />
-
-                    <InputError className="mt-2" message={errors.country} />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="phone_number" value="Telefoonnummer" />
-
-                    <TextInput
-                        id="phone_number"
-                        className="mt-1 block w-full"
-                        value={data.phone_number}
-                        onChange={(e) =>
-                            setData("phone_number", e.target.value)
-                        }
-                        required
-                        isFocused
-                        autoComplete="phone_number"
-                    />
-
-                    <InputError
-                        className="mt-2"
-                        message={errors.phone_number}
-                    />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        className="mt-1 block w-full"
-                        value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
-                        required
-                        autoComplete="username"
-                    />
-
-                    <InputError className="mt-2" message={errors.email} />
+                        <InputError className="mt-2" message={errors.email} />
+                    </div>
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
