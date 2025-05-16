@@ -21,6 +21,8 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::delete('/voertuigen/delete/{id}', [VehicleController::class, 'destroy'])->name('vehicles.delete');
     Route::get('/facturen', [InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/facturen/{id}/pdf', [InvoiceController::class, 'generateInvoicePdf'])->name('invoice.pdf');
+    Route::put('/facturen/{invoice}/pay', [InvoiceController::class, 'pay']);
+
 });
 
 Route::middleware('auth')->group(function () {

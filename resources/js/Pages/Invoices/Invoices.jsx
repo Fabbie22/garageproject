@@ -1,13 +1,35 @@
 import PrimaryButton from "@/Components/PrimaryButton";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { formatDate } from "date-fns";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function Invoices({ allInvoices }) {
     console.log(allInvoices);
+
+    const handlePay = (invoiceId) => {
+        router.put(
+            `/dashboard/facturen/${invoiceId}/pay`,
+            {},
+            {
+                preserveScroll: true,
+            }
+        );
+    };
+
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success);
+        } else {
+            toast.error(flash.error);
+        }
+    }, [flash]);
     return (
         <AuthenticatedLayout>
-            <Head title="Facturen"/>
+            <Head title="Facturen" />
             <div className="flex justify-center mt-16">
                 <h2 className="text-2xl font-semibold mb-4">Jouw facturen</h2>
             </div>
@@ -18,7 +40,8 @@ function Invoices({ allInvoices }) {
                             <th>Voertuig</th>
                             <th>Datum</th>
                             <th>Betaald</th>
-                            <th>Factuur</th>
+                            <th>Factuur downloaden</th>
+                            <th>Factuur betalen</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,10 +65,28 @@ function Invoices({ allInvoices }) {
                                             href={`/dashboard/facturen/${invoice.id}/pdf`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-block px-4 py-2 bg-blue-600 text-white rounded"
                                         >
-                                            Factuur downloaden
+                                            <PrimaryButton className="bg-blue-600">
+                                                Factuur downloaden
+                                            </PrimaryButton>
                                         </a>
+                                    </td>
+                                    <td>
+                                        <PrimaryButton
+                                            onClick={() =>
+                                                handlePay(invoice.id)
+                                            }
+                                            disabled={invoice.paid}
+                                            className={
+                                                invoice.paid
+                                                    ? "bg-gray-400 cursor-not-allowed"
+                                                    : ""
+                                            }
+                                        >
+                                            {invoice.paid
+                                                ? "Betaald"
+                                                : "Factuur betalen"}
+                                        </PrimaryButton>
                                     </td>
                                 </tr>
                             ))

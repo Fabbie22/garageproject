@@ -70,6 +70,20 @@ class InvoiceController extends Controller
         //
     }
 
+    public function pay(Request $request, \App\Models\Invoice $invoice)
+    {
+        try {
+            $invoice->paid = true;
+            $invoice->save();
+
+            return back()->with('success', 'Factuur gemarkeerd als betaald.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Er is iets fout gegaan met het betalen!');
+        }
+    }
+
+
+
     /**
      * Remove the specified resource from storage.
      */
