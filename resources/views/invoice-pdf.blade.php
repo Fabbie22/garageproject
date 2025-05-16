@@ -37,6 +37,12 @@
             Merk: {{ $invoice->vehicle->model }} {{ $invoice->vehicle->type }}
         </p>
     </div>
+    <div class="header">
+        <h3>Behandeling</h3>
+        <p>
+            Type behandeling: {{ $invoice->appointment->treatment->name ?? 'Geen behandeling gevonden' }}
+        </p>
+    </div>
 
     @php $total = 0 ;
         $subtotal = 0;

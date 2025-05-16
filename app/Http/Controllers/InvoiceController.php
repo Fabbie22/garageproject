@@ -14,7 +14,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $allInvoices = Invoice::with('appointment', 'vehicle', 'lineitems.part')->get();
+        $allInvoices = Invoice::with('appointment.treatment', 'vehicle', 'lineitems.part')->get();
 
 
         return Inertia::render('Invoices/Invoices', [
