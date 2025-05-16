@@ -1,4 +1,5 @@
 import DateInput from "@/Components/DateInput";
+import DropdownForm from "@/Components/DropdownForm";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
@@ -9,13 +10,23 @@ import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-export default function Appointments({ appointments }) {
+export default function Appointments({
+    appointments,
+    treatments,
+    personalAppointments,
+    personalVehicles,
+}) {
     const { url } = usePage();
     const fullUrl = new URL(url, window.location.origin);
     const params = new URLSearchParams(fullUrl.search);
     const dateFromUrl = params.get("date");
     const [bookedDates, setBookedDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateFromUrl);
+
+    console.log(appointments);
+    console.log(treatments);
+    console.log(personalAppointments);
+    console.log(personalVehicles);
 
     const { data, setData, post, errors } = useForm({
         date: dateFromUrl,
@@ -65,6 +76,8 @@ export default function Appointments({ appointments }) {
     const oneYearBeforeNow = new Date();
     oneYearBeforeNow.setFullYear(oneYearBeforeNow.getFullYear() - 1);
 
+    const handleSubmit = () => {};
+
     return (
         <AuthenticatedLayout>
             <Head title="Afspraken" />
@@ -85,7 +98,7 @@ export default function Appointments({ appointments }) {
                         />
                     </div>
                     <div>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div>
                                 <InputLabel htmlFor="date" value="Datum" />
 
@@ -103,6 +116,65 @@ export default function Appointments({ appointments }) {
                                     message={errors.date}
                                     className="mt-2"
                                 />
+                            </div>
+                            <div>
+                                <DropdownForm>
+                                    {personalVehicles.map((vehicle) => (
+                                        <option
+                                            value={vehicle.id}
+                                            key={vehicle.id}
+                                        >
+                                            {[
+                                                [vehicle?.model, vehicle?.type]
+                                                    .filter(Boolean)
+                                                    .join(" "),
+                                                vehicle?.kenteken,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" / ")}
+                                        </option>
+                                    ))}
+                                </DropdownForm>
+                            </div>
+                            <div>
+                                <DropdownForm>
+                                    {treatments.map((treatment) => (
+                                        <option
+                                            value={treatment.id}
+                                            key={treatment.id}
+                                        >
+                                            {treatment.name}
+                                        </option>
+                                    ))}
+                                </DropdownForm>
+                            </div>
+                            <div>
+                                <div>
+                                    <InputLabel
+                                        htmlFor="customer_note"
+                                        value="Notitie"
+                                    />
+
+                                    <textarea
+                                        id="customer_note"
+                                        name="customer_note"
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        autoComplete="customer_note"
+                                        isFocused={true}
+                                        onChange={(e) =>
+                                            setData(
+                                                "customer_note",
+                                                e.target.value
+                                            )
+                                        }
+                                        required
+                                    />
+
+                                    <InputError
+                                        message={errors.customer_note}
+                                        className="mt-2"
+                                    />
+                                </div>
                             </div>
                         </form>
                     </div>

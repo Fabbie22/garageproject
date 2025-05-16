@@ -11,7 +11,7 @@ class Appointment extends Model
 
     protected $fillable = ['user_id', 'vehicle_id', 'treatment_id', 'date', 'customer_note', 'mechanic_note', 'status', 'work_hours', 'approved'];
 
-    public function user() 
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -21,8 +21,8 @@ class Appointment extends Model
         return $this->belongsTo(Treatment::class);
     }
 
-    // public function vehicle()
-    // {
-    //     return $this->belongsTo(Vehicle::class);
-    // }
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
 }

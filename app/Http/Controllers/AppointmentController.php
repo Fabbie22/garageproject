@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Treatment;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,10 +15,21 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::with('user', 'treatment')->get();
+        $appointments = Appointment::select('treatment_id', 'date')->with('treatment')->get();
+        $personalAppointments = Appointment::select('user_id', 'vehicle_id', 'treatment_id', 'date', 'customer_note', 'mechanic_note', 'status', 'work_hours')
+            ->with('vehicle', 'treatment')->where('user_id', auth()->id())
+            ->get();
+        $personalVehicles = auth()->user()
+            ->vehicles()
+            ->select('vehicles.id', 'kenteken', 'model', 'type')
+            ->get();
+        $treatments = Treatment::all();
 
         return Inertia::render('Appointments/Appointments', [
             'appointments' => $appointments,
+            'treatments' => $treatments,
+            'personalAppointments' => $personalAppointments,
+            'personalVehicles' => $personalVehicles,
         ]);
     }
 
@@ -31,10 +44,7 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
