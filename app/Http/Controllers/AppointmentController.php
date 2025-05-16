@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\Treatment;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -54,13 +55,20 @@ class AppointmentController extends Controller
                 'customer_note' => 'nullable|string'
             ]);
 
-            Appointment::create([
+            $appointment = Appointment::create([
                 'user_id' => $request->user()->id,
                 'vehicle_id' => $request->vehicle,
                 'treatment_id' => $request->treatment,
                 'date' => $request->date,
                 'customer_note' => $request->customer_note
             ]);
+
+            Invoice::create([
+            'vehicle_id' => $appointment->vehicle_id,
+            'appointment_id' => $appointment->id,
+            'invoice_date' => now(),
+            'paid' => false
+        ]);
 
             return redirect()->back()->with('success', 'Afspraak is gemaakt.');
         } catch (\Exception $e) {

@@ -25,4 +25,9 @@ class Appointment extends Model
     {
         return $this->belongsTo(Vehicle::class);
     }
+    
+    public function invoice()
+    {
+    return $this->hasOne(Invoice::class);
+    }
 }

@@ -1,9 +1,7 @@
-import DateInput from "@/Components/DateInput";
 import DropdownForm from "@/Components/DropdownForm";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { format, formatDate } from "date-fns";
@@ -256,6 +254,7 @@ export default function Appointments({
                                 <th>Status</th>
                                 <th>Jouw notitie</th>
                                 <th>Gewerkte uren</th>
+                                <th>Factuur</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -277,6 +276,7 @@ export default function Appointments({
                                         <td>{appt.status}</td>
                                         <td>{appt.customer_note || "-"}</td>
                                         <td>{appt.work_hours ?? "-"}</td>
+                                        <td><PrimaryButton>Factuur betalen</PrimaryButton></td>
                                     </tr>
                                 ))
                             )}

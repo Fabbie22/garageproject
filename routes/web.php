@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,8 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::get('/voertuigen', [VehicleController::class, 'index'])->name('vehicles.index');
     Route::post('/voertuigen/create', [VehicleController::class, 'store'])->name('vehicles.store');
     Route::delete('/voertuigen/delete/{id}', [VehicleController::class, 'destroy'])->name('vehicles.delete');
+    Route::get('/facturen', [InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/facturen/{id}/pdf', [InvoiceController::class, 'generateInvoicePdf'])->name('invoice.pdf');
 });
 
 Route::middleware('auth')->group(function () {
