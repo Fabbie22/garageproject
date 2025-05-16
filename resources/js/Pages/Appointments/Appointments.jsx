@@ -13,15 +13,18 @@ export default function Appointments({ appointments }) {
     const { url } = usePage();
     const fullUrl = new URL(url, window.location.origin);
     const params = new URLSearchParams(fullUrl.search);
-    const dateFromUrl = params.get('date');
+    const dateFromUrl = params.get("date");
     const [bookedDates, setBookedDates] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(dateFromUrl || '');
+    const [selectedDate, setSelectedDate] = useState(dateFromUrl);
 
-    const { data, setData } = useForm({
-      date: dateFromUrl,
+    const { data, setData, post, errors } = useForm({
+        date: dateFromUrl,
     });
 
-    console.log(appointments);
+    useEffect(() => {
+        setSelectedDate(dateFromUrl);
+        setData("date", dateFromUrl);
+    }, [dateFromUrl]);
 
     useEffect(() => {
         const dailyHours = {};
@@ -52,7 +55,7 @@ export default function Appointments({ appointments }) {
     const onCalendarClickDay = (date) => {
         const formattedDate = format(date, "yyyy-MM-dd");
         setSelectedDate(formattedDate);
-        setData('date', formattedDate);
+        setData("date", formattedDate);
         router.visit(`/dashboard/afspraken?date=${formattedDate}`);
     };
 
@@ -64,7 +67,7 @@ export default function Appointments({ appointments }) {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Welkom" />
+            <Head title="Afspraken" />
 
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-12">
@@ -84,23 +87,22 @@ export default function Appointments({ appointments }) {
                     <div>
                         <form>
                             <div>
-                                <InputLabel
-                                    htmlFor="first_name"
-                                    value="Voornaam"
-                                />
+                                <InputLabel htmlFor="date" value="Datum" />
 
                                 <DateInput
-                                id="date"
-                                name="date"
-                                value={data.date}
-                                onChange={(e) => setSelectedDate(e.target.value)}
+                                    id="date"
+                                    name="date"
+                                    value={data.date || ""}
+                                    onChange={(e) => {
+                                        setSelectedDate(e.target.value);
+                                        setData("date", e.target.value);
+                                    }}
                                 />
 
-
-                                {/* <InputError
-                                    message={errors.first_name}
+                                <InputError
+                                    message={errors.date}
                                     className="mt-2"
-                                /> */}
+                                />
                             </div>
                         </form>
                     </div>

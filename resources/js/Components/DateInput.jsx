@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React from "react";
 
-export default function DateInput() {
-  const [dateValue, setDateValue] = useState('');
-
-  return (
-    <div>
-      <input
-        type="date"
-        id="date"
-        name="date"
-        value={dateValue}
-        onChange={(e) => setDateValue(e.target.value)}
-      />
-
-      <p>Selected date: {dateValue}</p>
-    </div>
-  );
+export default function DateInput({ id, name, value, onChange }) {
+    return (
+        <div>
+            <input
+                type="date"
+                id={id}
+                name={name}
+                value={value}
+                onChange={onChange}
+            />
+        </div>
+    );
 }
