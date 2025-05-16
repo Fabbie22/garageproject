@@ -6,10 +6,11 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { format } from "date-fns";
+import { format, formatDate } from "date-fns";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { toast } from "react-toastify";
 
 export default function Appointments({
     appointments,
@@ -24,17 +25,23 @@ export default function Appointments({
     const [bookedDates, setBookedDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateFromUrl);
 
-    console.log(appointments);
-    console.log(treatments);
     console.log(personalAppointments);
-    console.log(personalVehicles);
 
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, post, errors, processing } = useForm({
         date: dateFromUrl,
         vehicle: "",
         treatment: "",
         customer_note: "",
     });
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success);
+        } else {
+            toast.error(flash.error);
+        }
+    }, [flash]);
 
     useEffect(() => {
         setSelectedDate(dateFromUrl);
@@ -50,7 +57,7 @@ export default function Appointments({
             dailyHours[day] = (dailyHours[day] || 0) + duration;
         });
 
-        const maxDailyHours = 10;
+        const maxDailyHours = 32;
 
         const fullyBookedDays = Object.entries(dailyHours)
             .filter(([, hours]) => hours >= maxDailyHours)
@@ -82,13 +89,11 @@ export default function Appointments({
     const oneYearFromNow = new Date();
     oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
-    const oneYearBeforeNow = new Date();
-    oneYearBeforeNow.setFullYear(oneYearBeforeNow.getFullYear() - 1);
+    const oneDayBeforeNow = new Date();
+    oneDayBeforeNow.setDate(oneDayBeforeNow.getDate() - 1);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        console.log(data);
 
         post(route("appointments.store"));
     };
@@ -97,34 +102,37 @@ export default function Appointments({
         <AuthenticatedLayout>
             <Head title="Afspraken" />
 
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="flex flex-col lg:flex-row gap-12">
-                    <div className="lg:w-1/2">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12">
+                <div className="flex flex-col lg:flex-row gap-12 items-center justify-center">
+                    <div className="lg:w-1/2 flex flex-col items-center justify-center">
                         <h2 className="text-2xl font-semibold mb-4">
                             Beschikbaarheid
                         </h2>
                         <Calendar
                             tileDisabled={tileDisabled}
-                            minDate={oneYearBeforeNow}
+                            minDate={oneDayBeforeNow}
                             maxDate={oneYearFromNow}
                             onClickDay={onCalendarClickDay}
                             value={selectedDate ? new Date(selectedDate) : null}
                             className="rounded-lg shadow-md"
                         />
                     </div>
-                    <div>
+                    <div className="lg:w-1/2">
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Afspraak maken
+                        </h2>
                         <form onSubmit={handleSubmit}>
                             <div>
                                 <InputLabel htmlFor="date" value="Datum" />
 
-                                <DateInput
+                                <input
+                                    type="text"
                                     id="date"
                                     name="date"
-                                    value={data.date || ""}
-                                    onChange={(e) => {
-                                        setSelectedDate(e.target.value);
-                                        setData("date", e.target.value);
-                                    }}
+                                    placeholder="Selecteer datum uit de agenda"
+                                    value={selectedDate || ""}
+                                    readOnly
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 />
 
                                 <InputError
@@ -205,7 +213,6 @@ export default function Appointments({
                                                 e.target.value
                                             )
                                         }
-                                        required
                                     />
 
                                     <InputError
@@ -214,9 +221,56 @@ export default function Appointments({
                                     />
                                 </div>
                             </div>
-                            <PrimaryButton>Afspraak maken</PrimaryButton>
+                            <PrimaryButton
+                                className="mt-4"
+                                disabled={processing}
+                            >
+                                Afspraak maken
+                            </PrimaryButton>
                         </form>
                     </div>
+                </div>
+                <div className="flex justify-center mt-16">
+                    <h2 className="text-2xl font-semibold mb-4">
+                        Jouw afspraken
+                    </h2>
+                </div>
+                <div className="flex justify-center">
+                    <table border="1" cellPadding="8" cellSpacing="0">
+                        <thead>
+                            <tr>
+                                <th>Voertuig (Model / Type / Kenteken)</th>
+                                <th>Behandeling</th>
+                                <th>Datum</th>
+                                <th>Status</th>
+                                <th>Jouw notitie</th>
+                                <th>Gewerkte uren</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {personalAppointments.length === 0 ? (
+                                <tr>
+                                    <td colSpan="8">No appointments found</td>
+                                </tr>
+                            ) : (
+                                personalAppointments.map((appt) => (
+                                    <tr key={appt.id}>
+                                        <td>{`${appt.vehicle.model} ${appt.vehicle.type} (${appt.vehicle.kenteken})`}</td>
+                                        <td>{appt.treatment.name}</td>
+                                        <td>
+                                            {formatDate(
+                                                new Date(appt.date),
+                                                "dd-MM-yyyy"
+                                            )}
+                                        </td>
+                                        <td>{appt.status}</td>
+                                        <td>{appt.customer_note || "-"}</td>
+                                        <td>{appt.work_hours ?? "-"}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </AuthenticatedLayout>

@@ -29,6 +29,7 @@
         "@fortawesome/react-fontawesome": "^0.2.2",
         "date-fns": "^4.1.0",
         "react-calendar": "^5.1.0",
-        "react-responsive-carousel": "^3.2.23"
+        "react-responsive-carousel": "^3.2.23",
+        "react-toastify": "^11.0.5"
     }
 }

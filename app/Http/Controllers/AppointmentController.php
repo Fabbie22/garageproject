@@ -46,13 +46,26 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        Appointment::create([
-            'user_id' => $request->user()->id,
-            'vehicle_id' => $request->vehicle,
-            'treatment_id' => $request->treatment,
-            'date' => $request->date,
-            'customer_note' => $request->customer_note
-        ]);
+        try {
+            $request->validate([
+                'vehicle' => 'required',
+                'treatment' => 'required',
+                'date' => 'required|date',
+                'customer_note' => 'nullable|string'
+            ]);
+
+            Appointment::create([
+                'user_id' => $request->user()->id,
+                'vehicle_id' => $request->vehicle,
+                'treatment_id' => $request->treatment,
+                'date' => $request->date,
+                'customer_note' => $request->customer_note
+            ]);
+
+            return redirect()->back()->with('success', 'Afspraak is gemaakt.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Er is iets fout gegaan tijdens het maken van een afspraak!');
+        }
     }
 
     /**
