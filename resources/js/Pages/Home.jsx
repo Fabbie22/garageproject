@@ -23,7 +23,7 @@ export default function Home({ reviews, appointments }) {
             dailyHours[day] = (dailyHours[day] || 0) + duration;
         });
 
-        const maxDailyHours = 10;
+        const maxDailyHours = 32;
 
         const fullyBookedDays = Object.entries(dailyHours)
             .filter(([, hours]) => hours >= maxDailyHours)
@@ -48,8 +48,8 @@ export default function Home({ reviews, appointments }) {
     const oneYearFromNow = new Date();
     oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
-    const oneYearBeforeNow = new Date();
-    oneYearBeforeNow.setFullYear(oneYearBeforeNow.getFullYear() - 1);
+    const oneDayBeforeNow = new Date();
+    oneDayBeforeNow.setDate(oneDayBeforeNow.getDate() - 1);
 
     return (
         <SiteLayout>
@@ -63,7 +63,7 @@ export default function Home({ reviews, appointments }) {
                         </h2>
                         <Calendar
                             tileDisabled={tileDisabled}
-                            minDate={oneYearBeforeNow}
+                            minDate={oneDayBeforeNow}
                             maxDate={oneYearFromNow}
                             onClickDay={(date) => {
                                 const formattedDate = format(
