@@ -27,7 +27,7 @@ export default function Appointments({
 
     console.log(personalAppointments);
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing, reset } = useForm({
         date: dateFromUrl,
         vehicle: "",
         treatment: "",
@@ -95,11 +95,21 @@ export default function Appointments({
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        post(route("appointments.store"));
+        post(route("appointments.store"), {
+            onSuccess: () => {
+                reset("date", "vehicle", "treatment", "customer_note");
+            },
+        });
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    Afspraken
+                </h2>
+            }
+        >
             <Head title="Afspraken" />
 
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12">
@@ -205,6 +215,7 @@ export default function Appointments({
                                         name="customer_note"
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         autoComplete="customer_note"
+                                        placeholder="Vul hier je notitie in"
                                         isFocused={true}
                                         value={data.customer_note}
                                         onChange={(e) =>

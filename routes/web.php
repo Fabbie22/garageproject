@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,6 +15,9 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     })->name('dashboard');
     Route::get('/afspraken', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/afspraken/create', [AppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/voertuigen', [VehicleController::class, 'index'])->name('vehicles.index');
+    Route::post('/voertuigen/create', [VehicleController::class, 'store'])->name('vehicles.store');
+    Route::delete('/voertuigen/delete/{id}', [VehicleController::class, 'destroy'])->name('vehicles.delete');
 });
 
 Route::middleware('auth')->group(function () {

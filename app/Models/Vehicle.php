@@ -10,4 +10,9 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = ['kenteken', 'model', 'type'];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_has_vehicles');
+    }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VehicleController;
+use App\Models\Vehicle;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class VehicleController extends Controller
 {
@@ -12,7 +14,14 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        $personalVehicles = auth()->user()
+            ->vehicles()
+            ->select('vehicles.id', 'kenteken', 'model', 'type')
+            ->get();
+
+        return Inertia::render('Vehicles/Vehicles', [
+            'personalVehicles' => $personalVehicles,
+        ]);
     }
 
     /**
@@ -28,13 +37,31 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'model' => 'nullable|string',
+                'type' => 'nullable|string',
+                'kenteken' => 'required|string'
+            ]);
+
+            $vehicle = Vehicle::create([
+                'model' => $request->model,
+                'type' => $request->type,
+                'kenteken' => $request->kenteken,
+            ]);
+
+            $vehicle->users()->syncWithoutDetaching([$request->user()->id]);
+
+            return redirect()->back()->with('success', 'Voertuig toegevoegd');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Er is iets fout gegaan tijdens het voertuig aanmaken!');
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(VehicleController $vehicleController)
+    public function show(Request $request)
     {
         //
     }
@@ -42,7 +69,7 @@ class VehicleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(VehicleController $vehicleController)
+    public function edit(Request $request)
     {
         //
     }
@@ -50,7 +77,7 @@ class VehicleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VehicleController $vehicleController)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -58,8 +85,17 @@ class VehicleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VehicleController $vehicleController)
+    public function destroy($id)
     {
-        //
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+
+
+            $vehicle->delete();
+
+            return redirect()->back()->with('success', 'Voertuig verwijderd');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Er is iets fout gegaan tijdens het voertuig verwijderen!');
+        }
     }
 }

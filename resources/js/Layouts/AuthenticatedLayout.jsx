@@ -42,9 +42,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 )}
                                 {user.role === "customer" && (
                                     <NavLink
-                                        href={route("dashboard")}
+                                        href={route("vehicles.index")}
                                         active={route().current(
-                                            "afspraak-maken"
+                                            "vehicles.index"
                                         )}
                                     >
                                         Voertuigen
