@@ -37,6 +37,7 @@ function Invoices({ allInvoices }) {
                 <table border="1" cellPadding="8" cellSpacing="0">
                     <thead>
                         <tr>
+                            <th>Soort behandeling</th>
                             <th>Voertuig</th>
                             <th>Datum</th>
                             <th>Betaald</th>
@@ -52,6 +53,7 @@ function Invoices({ allInvoices }) {
                         ) : (
                             allInvoices.map((invoice) => (
                                 <tr key={invoice.id}>
+                                    <td>{invoice.appointment.treatment.name}</td>
                                     <td>{invoice.vehicle.kenteken}</td>
                                     <td>
                                         {formatDate(
