@@ -23,6 +23,8 @@ export default function Appointments({
     const [bookedDates, setBookedDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateFromUrl);
 
+    console.log(personalAppointments);
+
     const { data, setData, post, errors, processing, reset } = useForm({
         date: dateFromUrl,
         vehicle: "",
@@ -265,6 +267,7 @@ export default function Appointments({
                     <table border="1" cellPadding="8" cellSpacing="0">
                         <thead>
                             <tr>
+                                <th>Monteur</th>
                                 <th>Voertuig (Model / Type / Kenteken)</th>
                                 <th>Behandeling</th>
                                 <th>Datum</th>
@@ -282,6 +285,7 @@ export default function Appointments({
                             ) : (
                                 personalAppointments.map((appt) => (
                                     <tr key={appt.id}>
+                                        <td>{appt.mechanic.first_name} {appt.mechanic.last_name}</td>
                                         <td>{`${appt.vehicle.model} ${appt.vehicle.type} (${appt.vehicle.kenteken})`}</td>
                                         <td>{appt.treatment.name}</td>
                                         <td>
