@@ -16,9 +16,9 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::select('treatment_id', 'date')->with('treatment')->get();
+        $appointments = Appointment::select('treatment_id', 'date')->with('treatment', 'invoice')->get();
         $personalAppointments = Appointment::select('user_id', 'vehicle_id', 'treatment_id', 'date', 'customer_note', 'mechanic_note', 'status', 'work_hours')
-            ->with('vehicle', 'treatment')->where('user_id', auth()->id())
+            ->with('vehicle', 'treatment',)->where('user_id', auth()->id())
             ->get();
         $personalVehicles = auth()->user()
             ->vehicles()

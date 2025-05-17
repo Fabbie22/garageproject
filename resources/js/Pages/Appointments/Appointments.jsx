@@ -276,7 +276,15 @@ export default function Appointments({
                                         <td>{appt.status}</td>
                                         <td>{appt.customer_note || "-"}</td>
                                         <td>{appt.work_hours ?? "-"}</td>
-                                        <td><PrimaryButton>Factuur betalen</PrimaryButton></td>
+                                        <td>
+                                            <a
+                                                href={`/dashboard/facturen`}
+                                            >
+                                                <PrimaryButton className="bg-blue-600">
+                                                    Naar facturen
+                                                </PrimaryButton>
+                                            </a>
+                                        </td>
                                     </tr>
                                 ))
                             )}

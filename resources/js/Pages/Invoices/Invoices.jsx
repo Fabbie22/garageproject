@@ -39,21 +39,23 @@ function Invoices({ allInvoices }) {
                         <tr>
                             <th>Soort behandeling</th>
                             <th>Voertuig</th>
-                            <th>Datum</th>
+                            <th>Facturatie Datum</th>
                             <th>Betaald</th>
                             <th>Factuur downloaden</th>
                             <th>Factuur betalen</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {allInvoices.length === 0? (
+                        {allInvoices.length === 0 ? (
                             <tr>
                                 <td colSpan="8">No appointments found</td>
                             </tr>
                         ) : (
                             allInvoices.map((invoice) => (
                                 <tr key={invoice.id}>
-                                    <td>{invoice.appointment.treatment.name}</td>
+                                    <td>
+                                        {invoice.appointment.treatment.name}
+                                    </td>
                                     <td>{invoice.vehicle.kenteken}</td>
                                     <td>
                                         {formatDate(
@@ -65,11 +67,20 @@ function Invoices({ allInvoices }) {
                                     <td>
                                         <a
                                             href={`/dashboard/facturen/${invoice.id}/pdf`}
-                                            target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            <PrimaryButton disabled={Object.keys(invoice.lineitems).length < 1} className="bg-blue-600">
-                                                Factuur downloaden
+                                            <PrimaryButton
+                                                disabled={
+                                                    Object.keys(
+                                                        invoice.lineitems
+                                                    ).length < 1
+                                                }
+                                                className="bg-blue-600"
+                                            >
+                                                {Object.keys(invoice.lineitems)
+                                                    .length < 1
+                                                    ? "Factuur niet beschikbaar"
+                                                    : "Factuur downloaden"}
                                             </PrimaryButton>
                                         </a>
                                     </td>
@@ -78,7 +89,11 @@ function Invoices({ allInvoices }) {
                                             onClick={() =>
                                                 handlePay(invoice.id)
                                             }
-                                            disabled={invoice.paid || Object.keys(invoice.lineitems).length < 1}
+                                            disabled={
+                                                invoice.paid ||
+                                                Object.keys(invoice.lineitems)
+                                                    .length < 1
+                                            }
                                             className={
                                                 invoice.paid
                                                     ? "bg-gray-400 cursor-not-allowed"
@@ -87,6 +102,9 @@ function Invoices({ allInvoices }) {
                                         >
                                             {invoice.paid
                                                 ? "Betaald"
+                                                : Object.keys(invoice.lineitems)
+                                                      .length < 1
+                                                ? "Factuur niet beschikbaar"
                                                 : "Factuur betalen"}
                                         </PrimaryButton>
                                     </td>
