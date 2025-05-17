@@ -46,7 +46,7 @@ function Invoices({ allInvoices }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {allInvoices.length === 0 ? (
+                        {allInvoices.length === 0? (
                             <tr>
                                 <td colSpan="8">No appointments found</td>
                             </tr>
@@ -68,7 +68,7 @@ function Invoices({ allInvoices }) {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            <PrimaryButton className="bg-blue-600">
+                                            <PrimaryButton disabled={Object.keys(invoice.lineitems).length < 1} className="bg-blue-600">
                                                 Factuur downloaden
                                             </PrimaryButton>
                                         </a>
@@ -78,7 +78,7 @@ function Invoices({ allInvoices }) {
                                             onClick={() =>
                                                 handlePay(invoice.id)
                                             }
-                                            disabled={invoice.paid}
+                                            disabled={invoice.paid || Object.keys(invoice.lineitems).length < 1}
                                             className={
                                                 invoice.paid
                                                     ? "bg-gray-400 cursor-not-allowed"
