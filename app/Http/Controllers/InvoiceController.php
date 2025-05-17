@@ -17,7 +17,7 @@ class InvoiceController extends Controller
     {
         $userId = Auth::id();
 
-        $allInvoices = Invoice::with('appointment.treatment', 'vehicle', 'lineitems.part')
+        $allInvoices = Invoice::with('appointment.treatment', 'appointment.mechanic', 'vehicle', 'lineitems.part')
             ->whereHas('appointment', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })

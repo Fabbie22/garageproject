@@ -30,4 +30,10 @@ class Appointment extends Model
     {
         return $this->hasOne(Invoice::class);
     }
+
+    public function mechanic()
+    {
+        return $this->belongsTo(User::class, 'mechanic_id');
+    }
+
 }

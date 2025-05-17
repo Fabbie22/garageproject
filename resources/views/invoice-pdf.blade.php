@@ -29,6 +29,16 @@
             {{ $invoice->appointment->user->phone_number ?? '' }}
         </p>
     </div>
+    <div class="header">
+        <p><strong>Monteur:</strong>
+        {{ $invoice->appointment->mechanic->first_name ?? 'Geen naam gevonden' }}
+        {{ $invoice->appointment->mechanic->last_name ?? '' }}
+        </p>
+        <h3>Opmerkingen:</h3>
+        <p>
+            {{ $invoice->appointment->mechanic_note ?? 'Geen opmerkingen geplaatst' }}
+        </p>
+    </div>
 
     <div class="header">
         <h3>Voertuig</h3>
