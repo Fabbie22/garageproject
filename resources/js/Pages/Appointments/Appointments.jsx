@@ -23,8 +23,6 @@ export default function Appointments({
     const [bookedDates, setBookedDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateFromUrl);
 
-    console.log(personalAppointments);
-
     const { data, setData, post, errors, processing, reset } = useForm({
         date: dateFromUrl,
         vehicle: "",
@@ -36,7 +34,7 @@ export default function Appointments({
     useEffect(() => {
         if (flash.success) {
             toast.success(flash.success);
-        } else {
+        } else if (flash.error) {
             toast.error(flash.error);
         }
     }, [flash]);
@@ -55,7 +53,7 @@ export default function Appointments({
             dailyHours[day] = (dailyHours[day] || 0) + duration;
         });
 
-        const maxDailyHours = 32;
+        const maxDailyHours = 10;
 
         const fullyBookedDays = Object.entries(dailyHours)
             .filter(([, hours]) => hours >= maxDailyHours)
@@ -64,12 +62,26 @@ export default function Appointments({
         setBookedDates(fullyBookedDays);
     }, [appointments]);
 
+    const maxDailyHours = 10;
+
+    const bookedHoursForSelectedDate = selectedDate
+        ? appointments
+              .filter(
+                  ({ date }) =>
+                      format(new Date(date), "yyyy-MM-dd") === selectedDate
+              )
+              .reduce(
+                  (total, appt) => total + (appt.treatment?.duration || 0),
+                  0
+              )
+        : 0;
+
     const tileDisabled = ({ date, view }) => {
         if (view === "month") {
             const dateString = format(date, "yyyy-MM-dd");
 
             const isFullyBooked = bookedDates.includes(dateString);
-            const isSunday = date.getDay() === 0; // 0 = Sunday
+            const isSunday = date.getDay() === 0; // Sunday
 
             return isFullyBooked || isSunday;
         }
@@ -191,44 +203,49 @@ export default function Appointments({
                                         — Kies een behandeling —
                                     </option>
 
-                                    {treatments.map((treatment) => (
-                                        <option
-                                            value={treatment.id}
-                                            key={treatment.id}
-                                        >
-                                            {treatment.name}
-                                        </option>
-                                    ))}
+                                    {treatments.map((treatment) => {
+                                        const wouldExceed =
+                                            bookedHoursForSelectedDate +
+                                                (treatment.duration || 0) >
+                                            maxDailyHours;
+                                        return (
+                                            <option
+                                                value={treatment.id}
+                                                key={treatment.id}
+                                                disabled={wouldExceed}
+                                            >
+                                                {treatment.name} ({treatment.duration} uren)                                                     
+                                                {wouldExceed
+                                                        ? " Behandeling vol voor vandaag"
+                                                        : ""}
+                                            </option>
+                                        );
+                                    })}
                                 </DropdownForm>
                             </div>
                             <div>
-                                <div>
-                                    <InputLabel
-                                        htmlFor="customer_note"
-                                        value="Notitie"
-                                    />
+                                <InputLabel
+                                    htmlFor="customer_note"
+                                    value="Notitie"
+                                />
 
-                                    <textarea
-                                        id="customer_note"
-                                        name="customer_note"
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        autoComplete="customer_note"
-                                        placeholder="Vul hier je notitie in"
-                                        isFocused={true}
-                                        value={data.customer_note}
-                                        onChange={(e) =>
-                                            setData(
-                                                "customer_note",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
+                                <textarea
+                                    id="customer_note"
+                                    name="customer_note"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    autoComplete="customer_note"
+                                    placeholder="Vul hier je notitie in"
+                                    isFocused={true}
+                                    value={data.customer_note}
+                                    onChange={(e) =>
+                                        setData("customer_note", e.target.value)
+                                    }
+                                />
 
-                                    <InputError
-                                        message={errors.customer_note}
-                                        className="mt-2"
-                                    />
-                                </div>
+                                <InputError
+                                    message={errors.customer_note}
+                                    className="mt-2"
+                                />
                             </div>
                             <PrimaryButton
                                 className="mt-4"
@@ -277,9 +294,7 @@ export default function Appointments({
                                         <td>{appt.customer_note || "-"}</td>
                                         <td>{appt.work_hours ?? "-"}</td>
                                         <td>
-                                            <a
-                                                href={`/dashboard/facturen`}
-                                            >
+                                            <a href={`/dashboard/facturen`}>
                                                 <PrimaryButton className="bg-blue-600">
                                                     Naar facturen
                                                 </PrimaryButton>
