@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,7 +23,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::get('/facturen', [InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/facturen/{id}/pdf', [InvoiceController::class, 'generateInvoicePdf'])->name('invoice.pdf');
     Route::put('/facturen/{invoice}/pay', [InvoiceController::class, 'pay']);
-
+    Route::post('/reviews/add', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
 Route::middleware('auth')->group(function () {

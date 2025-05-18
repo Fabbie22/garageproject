@@ -1,21 +1,58 @@
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
+import SecondaryButton from "@/Components/SecondaryButton";
+import Star from "@/Components/Star";
+import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { formatDate } from "date-fns";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function Invoices({ allInvoices }) {
     console.log(allInvoices);
 
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [isAddingReview, setIsAddingReview] = useState(false);
+
+    const { data, setData, post, errors, processing } = useForm({
+        description: "",
+        rating: 0,
+    });
+
     const handlePay = (invoiceId) => {
-        router.put(
-            `/dashboard/facturen/${invoiceId}/pay`,
-            {},
-            {
-                preserveScroll: true,
-            }
-        );
+        setIsReviewModalOpen(true);
+        router.put(`/dashboard/facturen/${invoiceId}/pay`, {
+            preserveScroll: true,
+        });
+    };
+
+    const calculateTotal = (invoice) => {
+        const laborRate = 80;
+        const workHours = parseFloat(invoice.appointment.work_hours ?? 0);
+        const laborCost = laborRate * workHours;
+
+        const partsTotal = invoice.lineitems.reduce((sum, item) => {
+            const price = parseFloat(item.part?.price ?? item.price ?? 0);
+            return sum + price * item.quantity;
+        }, 0);
+
+        const subtotal = partsTotal + laborCost;
+        const vat = subtotal * 0.21;
+        const total = subtotal + vat;
+
+        return total.toFixed(2);
+    };
+
+    const handleAddReview = (e) => {
+        e.preventDefault();
+
+        post(route("reviews.store"), {
+            data,
+        });
+        setIsReviewModalOpen(false);
     };
 
     const { flash } = usePage().props;
@@ -43,6 +80,7 @@ function Invoices({ allInvoices }) {
                             <th>Betaald</th>
                             <th>Factuur downloaden</th>
                             <th>Factuur betalen</th>
+                            <th>Totaal (incl. BTW)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,12 +146,93 @@ function Invoices({ allInvoices }) {
                                                 : "Factuur betalen"}
                                         </PrimaryButton>
                                     </td>
+                                    <td>€ {calculateTotal(invoice)}</td>
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
             </div>
+            <Modal
+                show={isReviewModalOpen}
+                onClose={() => {
+                    setIsReviewModalOpen(false);
+                }}
+            >
+                <div className="p-16">
+                    {!isAddingReview ? (
+                        <div>
+                            <h2 className="text-lg font-bold mb-4">
+                                Wil je een review toevoegen?
+                            </h2>
+                            <SecondaryButton
+                                className="mr-5"
+                                onClick={() => setIsReviewModalOpen(false)}
+                            >
+                                Annuleren
+                            </SecondaryButton>
+                            <PrimaryButton
+                                onClick={() => setIsAddingReview(true)}
+                            >
+                                Ja, graag!
+                            </PrimaryButton>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleAddReview}>
+                            <h2 className="text-lg font-bold mb-4">
+                                Review toevoegen
+                            </h2>
+                            <div className="mt-4">
+                                <InputLabel htmlFor="rating" value="Rating" />
+                                <div className="flex space-x-1 mt-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <Star
+                                            key={star}
+                                            filled={star <= data.rating}
+                                            onClick={() =>
+                                                setData("rating", star)
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                                <InputError
+                                    message={errors.rating}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div>
+                                <InputLabel
+                                    htmlFor="description"
+                                    value="Description"
+                                />
+
+                                <TextInput
+                                    id="description"
+                                    name="description"
+                                    value={data.description}
+                                    className="mt-1 block w-full"
+                                    autoComplete="type"
+                                    isFocused={true}
+                                    onChange={(e) =>
+                                        setData("description", e.target.value)
+                                    }
+                                />
+
+                                <InputError
+                                    message={errors.description}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <PrimaryButton
+                                disabled={processing}
+                                className="mt-4"
+                            >
+                                Review toevoegen
+                            </PrimaryButton>
+                        </form>
+                    )}
+                </div>
+            </Modal>
         </AuthenticatedLayout>
     );
 }

@@ -35,7 +35,24 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+                'description' => 'nullable|string'
+            ]);
+
+            Review::create([
+                'rating' => $request->rating,
+                'description' => $request->description,
+                'user_id' => $request->user()->id
+            ]);
+
+            return redirect()->back()->with('success', 'Bedankt voor je review!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Er is iets fout gegaan tijdens het toevoegen van de review!');
+        }
+
     }
 
     /**

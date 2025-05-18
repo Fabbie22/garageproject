@@ -56,6 +56,9 @@
 
     @php $total = 0 ;
         $subtotal = 0;
+        $workHours = $invoice->appointment->work_hours ?? 0;
+        $laborRate = 80;
+        $laborCost = $laborRate * $workHours;
     @endphp
     <h3>Producten</h3>
     <table>
@@ -85,13 +88,30 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="header">
+        <h3>Arbeid</h3>
+        <p>
+            Aantal gewerkte uren: {{ $invoice->appointment->work_hours ?? 0 }} uur<br>
+            Uurtarief: €80,00<br>
+            Totaal arbeidskosten: €{{ number_format(80 * ($invoice->appointment->work_hours ?? 0), 2) }}
+        </p>
+    </div>
+
     @php
         $vat = $subtotal * 0.21;
         $total = $subtotal + $vat;
     @endphp
 
-    <h3 class="total">Subtotaal: €{{ number_format($subtotal, 2) }}</h3>
+    @php
+        $vatBase = $subtotal + $laborCost;
+        $vat = $vatBase * 0.21;
+        $total = $vatBase + $vat;
+    @endphp
+
+    <h3 class="total">Subtotaal: €{{ number_format($vatBase, 2) }}</h3>
     <h3 class="total">21% BTW: €{{ number_format($vat, 2) }}</h3>
-    <h3 class="total">Totaal incl. BTW: €{{ number_format($total, 2) }}</h3></body>
-    <h3 class="total">Te betalen bedrag op NL32RABO 0983 4501 90: €{{ number_format($total, 2) }}</h3></body>
+    <h3 class="total">Totaal incl. BTW: €{{ number_format($total, 2) }}</h3>
+    <h3 class="total">Te betalen bedrag op NL32RABO 0983 4501 90: €{{ number_format($total, 2) }}</h3>
+
 </html>

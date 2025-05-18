@@ -55,7 +55,7 @@ export default function Appointments({
             dailyHours[day] = (dailyHours[day] || 0) + duration;
         });
 
-        const maxDailyHours = 10;
+        const maxDailyHours = 32;
 
         const fullyBookedDays = Object.entries(dailyHours)
             .filter(([, hours]) => hours >= maxDailyHours)
@@ -64,7 +64,7 @@ export default function Appointments({
         setBookedDates(fullyBookedDays);
     }, [appointments]);
 
-    const maxDailyHours = 10;
+    const maxDailyHours = 32;
 
     const bookedHoursForSelectedDate = selectedDate
         ? appointments
@@ -95,7 +95,6 @@ export default function Appointments({
         const formattedDate = format(date, "yyyy-MM-dd");
         setSelectedDate(formattedDate);
         setData("date", formattedDate);
-        router.visit(`/dashboard/afspraken?date=${formattedDate}`);
     };
 
     const oneYearFromNow = new Date();
@@ -285,7 +284,7 @@ export default function Appointments({
                             ) : (
                                 personalAppointments.map((appt) => (
                                     <tr key={appt.id}>
-                                        <td>{appt.mechanic.first_name} {appt.mechanic.last_name}</td>
+                                        <td>{appt.mechanic !== null ? appt?.mechanic?.first_name + " " + appt?.mechanic?.last_name : "Er is geen monteur toegekend"}</td>
                                         <td>{`${appt.vehicle.model} ${appt.vehicle.type} (${appt.vehicle.kenteken})`}</td>
                                         <td>{appt.treatment.name}</td>
                                         <td>
