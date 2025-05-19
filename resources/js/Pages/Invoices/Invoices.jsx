@@ -17,7 +17,7 @@ function Invoices({ allInvoices }) {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [isAddingReview, setIsAddingReview] = useState(false);
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing, reset } = useForm({
         description: "",
         rating: 0,
     });
@@ -51,8 +51,12 @@ function Invoices({ allInvoices }) {
 
         post(route("reviews.store"), {
             data,
+            onSuccess: () => {
+                reset("rating", "description");
+                setIsReviewModalOpen(false);
+                setIsAddingReview(false);
+            },
         });
-        setIsReviewModalOpen(false);
     };
 
     const { flash } = usePage().props;
