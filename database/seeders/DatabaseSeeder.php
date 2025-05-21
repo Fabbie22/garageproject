@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TreatmentSeeder::class,
             VehicleSeeder::class,
+            AppointmentSeeder::class,
         ]);
     }
 }
